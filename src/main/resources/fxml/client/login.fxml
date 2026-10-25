@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.syncvault.client.controller.LoginController"
+            prefWidth="580.0" prefHeight="480.0"
+            stylesheets="@../../css/style.css">
+
+    <top>
+        <HBox styleClass="hud-bar" spacing="12" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="10" right="16" bottom="10" left="16"/>
+            </padding>
+            <Label text="SYNCVAULT // CỔNG ĐĂNG NHẬP MẠNG PHÂN TÁN" styleClass="hud-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="RFC 959 + RMI" styleClass="telemetry-value-cyan"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="14" alignment="CENTER">
+            <padding>
+                <Insets top="20" right="30" bottom="20" left="30"/>
+            </padding>
+
+            <VBox styleClass="terminal-panel" spacing="12">
+                <padding>
+                    <Insets top="16" right="16" bottom="16" left="16"/>
+                </padding>
+
+                <Label text="[ CHỌN MÁY CHỦ KẾT NỐI DỰA TRÊN ĐỊA CHỈ IP ]" styleClass="panel-header"/>
+
+                <HBox spacing="20" alignment="CENTER_LEFT">
+                    <fx:define>
+                        <ToggleGroup fx:id="serverToggleGroup"/>
+                    </fx:define>
+                    <RadioButton fx:id="serverARadio" text="Server A (Primary: 2121)" toggleGroup="$serverToggleGroup" selected="true" onAction="#handleSelectServerA"/>
+                    <RadioButton fx:id="serverBRadio" text="Server B (Secondary: 2122)" toggleGroup="$serverToggleGroup" onAction="#handleSelectServerB"/>
+                </HBox>
+
+                <HBox spacing="12">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="ĐỊA CHỈ IP MÁY CHỦ:" styleClass="telemetry-label"/>
+                        <TextField fx:id="hostField" text="127.0.0.1" promptText="127.0.0.1"/>
+                    </VBox>
+                    <VBox spacing="4" prefWidth="100.0">
+                        <Label text="CỔNG FTP:" styleClass="telemetry-label"/>
+                        <TextField fx:id="portField" text="2121" promptText="2121"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <VBox styleClass="terminal-panel" spacing="12">
+                <padding>
+                    <Insets top="16" right="16" bottom="16" left="16"/>
+                </padding>
+
+                <Label text="[ THÔNG TIN TÀI KHOẢN ]" styleClass="panel-header"/>
+
+                <VBox spacing="4">
+                    <Label text="TÊN ĐĂNG NHẬP (USER):" styleClass="telemetry-label"/>
+                    <TextField fx:id="usernameField" promptText="Nhập tên tài khoản (VD: student01)"/>
+                </VBox>
+
+                <VBox spacing="4">
+                    <Label text="MẬT KHẨU (PASS):" styleClass="telemetry-label"/>
+                    <PasswordField fx:id="passwordField" promptText="Nhập mật khẩu (VD: 123456)"/>
+                </VBox>
+
+                <Label fx:id="errorLabel" text="" wrapText="true" styleClass="telemetry-value-warn"/>
+            </VBox>
+
+            <Button fx:id="loginButton" text="▶ KẾT NỐI &amp; ĐĂNG NHẬP VÀO HỆ THỐNG" onAction="#handleLogin"
+                    styleClass="button-action" prefWidth="380.0" prefHeight="40.0"/>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox styleClass="hud-status-bar" alignment="CENTER_LEFT" spacing="10">
+            <padding>
+                <Insets top="6" right="16" bottom="6" left="16"/>
+            </padding>
+            <Label text="Quy tắc: 1 tài khoản chỉ được phép hoạt động trên 1 máy chủ duy nhất" styleClass="telemetry-label"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="statusLabel" text="SẴN SÀNG" styleClass="telemetry-value-nominal"/>
+        </HBox>
+    </bottom>
+</BorderPane>

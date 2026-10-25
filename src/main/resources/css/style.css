@@ -1,0 +1,188 @@
+/* ==========================================================================
+   SYNCVAULT // NIER:AUTOMATA (YORHA SYSTEM OS) - HIGH-LEGIBILITY EDITION
+   Phong cách: YoRHa Android OS - Tối ưu độ sắc nét, tương phản cao, dễ nhìn
+   Tông màu: Warm Sand (#d3cebf) & Deep Charcoal (#1c1b17)
+   ========================================================================== */
+
+.root {
+    -fx-background-color: #d3cebf;
+    -fx-font-family: "Consolas", "Segoe UI", "Lucida Console", monospace;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1c1b17;
+}
+
+/* ==========================================================================
+   THANH CHỈ HUY & HUD TELEMETRY
+   ========================================================================== */
+
+.hud-bar {
+    -fx-background-color: #c8c3b0;
+    -fx-border-color: #4b473b;
+    -fx-border-width: 0 0 2px 0;
+    -fx-padding: 8px 16px;
+    -fx-alignment: center-left;
+}
+
+.hud-status-bar {
+    -fx-background-color: #c8c3b0;
+    -fx-border-color: #4b473b;
+    -fx-border-width: 2px 0 0 0;
+    -fx-padding: 6px 16px;
+}
+
+.hud-title {
+    -fx-text-fill: #201f1a;
+    -fx-font-family: "Consolas", "Segoe UI", monospace;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.telemetry-label {
+    -fx-text-fill: #5a5547;
+    -fx-font-size: 12px;
+}
+
+.telemetry-value-nominal {
+    -fx-text-fill: #276620;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.telemetry-value-warn {
+    -fx-text-fill: #b8522e;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.telemetry-value-cyan {
+    -fx-text-fill: #1f4f6e;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+/* ==========================================================================
+   PANEL THẺ GIAO DIỆN (PARCHMENT CARDS)
+   ========================================================================== */
+
+.terminal-panel {
+    -fx-background-color: #ebe7da;
+    -fx-border-color: #4b473b;
+    -fx-border-width: 1px;
+}
+
+.panel-header {
+    -fx-font-weight: bold;
+    -fx-text-fill: #201f1a;
+    -fx-font-size: 13px;
+}
+
+/* ==========================================================================
+   NÚT BẤM (BUTTONS)
+   ========================================================================== */
+
+.button {
+    -fx-background-color: #c8c3b0;
+    -fx-border-color: #4b473b;
+    -fx-border-width: 1px;
+    -fx-text-fill: #1c1b17;
+    -fx-font-weight: bold;
+    -fx-padding: 6px 12px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #bab5a1;
+}
+
+.button:pressed {
+    -fx-background-color: #4b473b;
+    -fx-text-fill: #ebe7da;
+}
+
+.button-action {
+    -fx-background-color: #3b5f39;
+    -fx-border-color: #274325;
+    -fx-border-width: 1px;
+    -fx-text-fill: #f0f0eb;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.button-action:hover {
+    -fx-background-color: #487545;
+}
+
+.button-danger {
+    -fx-background-color: #8c3227;
+    -fx-border-color: #5e1f18;
+    -fx-border-width: 1px;
+    -fx-text-fill: #fdfcf9;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.button-danger:hover {
+    -fx-background-color: #aa3d30;
+}
+
+/* ==========================================================================
+   TABLE VIEW & TEXT INPUTS
+   ========================================================================== */
+
+.text-field, .password-field {
+    -fx-background-color: #f7f5ed;
+    -fx-border-color: #4b473b;
+    -fx-border-width: 1px;
+    -fx-text-fill: #1c1b17;
+    -fx-padding: 6px;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #1f4f6e;
+    -fx-background-color: #ffffff;
+}
+
+.table-view {
+    -fx-background-color: #ebe7da;
+    -fx-border-color: #4b473b;
+    -fx-border-width: 1px;
+}
+
+.table-view .column-header {
+    -fx-background-color: #c8c3b0;
+    -fx-border-color: #4b473b;
+    -fx-border-width: 0 1px 1px 0;
+    -fx-font-weight: bold;
+    -fx-text-fill: #201f1a;
+}
+
+.table-row-cell:filled:selected {
+    -fx-background-color: #4b473b;
+    -fx-text-fill: #ffffff;
+}
+
+.table-row-cell:filled:hover {
+    -fx-background-color: #ded9ca;
+}
+
+/* Status pills */
+.server-status-pill-running {
+    -fx-background-color: #276620;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-padding: 3px 8px;
+}
+
+.server-status-pill-stopped {
+    -fx-background-color: #8c3227;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-padding: 3px 8px;
+}
+
+.server-log-area {
+    -fx-control-inner-background: #1c1b17;
+    -fx-font-family: "Consolas", monospace;
+    -fx-highlight-fill: #5a5547;
+    -fx-text-fill: #8ef77e;
+}
