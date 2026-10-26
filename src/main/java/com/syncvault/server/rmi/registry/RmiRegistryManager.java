@@ -26,6 +26,10 @@ public class RmiRegistryManager {
 
     public boolean startLocalServices() {
         try {
+            // Thiết lập hostname cho RMI stub để máy khác trong LAN có thể kết nối
+            String localIp = com.syncvault.shared.util.NetworkUtil.getLocalIpAddress();
+            System.setProperty("java.rmi.server.hostname", localIp);
+
             int port = context.getRmiPort();
             try {
                 localRegistry = LocateRegistry.createRegistry(port);
