@@ -18,8 +18,16 @@ public class ServerLauncher {
 
     public static void main(String[] args) {
         String modeArg = "primary";
-        if (args.length > 0 && args[0].equalsIgnoreCase("--secondary")) {
-            modeArg = "secondary";
+        String peerHost = "127.0.0.1";
+
+        for (String arg : args) {
+            if (arg.equalsIgnoreCase("--secondary") || arg.equalsIgnoreCase("-s")) {
+                modeArg = "secondary";
+            } else if (arg.startsWith("--peer=")) {
+                peerHost = arg.substring("--peer=".length()).trim();
+            } else if (!arg.startsWith("-")) {
+                peerHost = arg.trim();
+            }
         }
 
         boolean isPrimary = modeArg.equalsIgnoreCase("primary");
@@ -43,6 +51,7 @@ public class ServerLauncher {
 
         // 2. Tạo Server Context
         ServerContext context = new ServerContext(serverId, mode, ftpPort, rmiPort, storageRoot, dataStore);
+        context.setPeerHost(peerHost);
         context.setPeerRmiPort(peerRmiPort);
         context.setPeerServerId(isPrimary ? SystemConfig.SERVER_B_ID : SystemConfig.SERVER_A_ID);
 
@@ -57,14 +66,17 @@ public class ServerLauncher {
         FtpServer ftpServer = new FtpServer(context);
         ftpServer.start();
 
+        String localIp = com.syncvault.shared.util.NetworkUtil.getLocalIpAddress();
         LOGGER.info(String.format("====================================================\n" +
                         "  SYNCVAULT // %s ĐÃ SẴN SÀNG HOẠT ĐỘNG\n" +
                         "  - Vai trò: %s\n" +
+                        "  - Địa chỉ IP máy này (LAN): %s\n" +
                         "  - Kênh điều khiển FTP: Port %d\n" +
                         "  - Kênh phân tán RMI: Port %d\n" +
+                        "  - Server đối tác: %s:%d\n" +
                         "  - Kho lưu trữ: %s\n" +
                         "====================================================",
-                serverId, mode, ftpPort, rmiPort, storageRoot.getAbsolutePath()));
+                serverId, mode, localIp, ftpPort, rmiPort, peerHost, peerRmiPort, storageRoot.getAbsolutePath()));
 
         // Hook dọn dẹp khi tắt tiến trình (Ctrl+C)
         final IDataStore finalDataStore = dataStore;
