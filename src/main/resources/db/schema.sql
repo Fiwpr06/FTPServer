@@ -3,8 +3,8 @@
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    salt VARCHAR(64) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    salt VARCHAR(64) DEFAULT '',
     home_dir VARCHAR(255) DEFAULT '/',
     max_quota_bytes BIGINT DEFAULT 104857600,
     can_upload TINYINT(1) DEFAULT 1,

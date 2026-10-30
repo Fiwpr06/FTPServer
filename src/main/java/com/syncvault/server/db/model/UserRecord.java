@@ -2,12 +2,12 @@ package com.syncvault.server.db.model;
 
 import java.time.LocalDateTime;
 
-// Bản ghi tài khoản người dùng
+// Bản ghi tài khoản người dùng (Mật khẩu Plaintext không băm/không hash)
 public class UserRecord {
     private int id;
     private String username;
-    private String passwordHash;
-    private String salt;
+    private String password;
+    private String salt = "";
     private String homeDir;
     private long maxQuotaBytes;
     private boolean canUpload;
@@ -23,11 +23,15 @@ public class UserRecord {
         this.homeDir = "/";
     }
 
-    public UserRecord(String username, String passwordHash, String salt) {
+    public UserRecord(String username, String password) {
         this();
         this.username = username;
-        this.passwordHash = passwordHash;
-        this.salt = salt;
+        this.password = password;
+    }
+
+    public UserRecord(String username, String password, String salt) {
+        this(username, password);
+        this.salt = salt != null ? salt : "";
     }
 
     public int getId() { return id; }
@@ -36,8 +40,12 @@ public class UserRecord {
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 
-    public String getPasswordHash() { return passwordHash; }
-    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
+    // Tương thích ngược với các getter cũ nếu có
+    public String getPasswordHash() { return password; }
+    public void setPasswordHash(String passwordHash) { this.password = passwordHash; }
 
     public String getSalt() { return salt; }
     public void setSalt(String salt) { this.salt = salt; }

@@ -4,7 +4,6 @@ import com.syncvault.server.db.model.FileMetadataRecord;
 import com.syncvault.server.db.model.SessionRecord;
 import com.syncvault.server.db.model.SyncLogRecord;
 import com.syncvault.server.db.model.UserRecord;
-import com.syncvault.server.security.PasswordHasher;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -34,17 +33,19 @@ public class InMemoryDataStore implements IDataStore {
 
     private void seedDefaultUsers() {
         if (!users.containsKey("student01")) {
-            String salt1 = PasswordHasher.generateSalt();
-            String hash1 = PasswordHasher.hashPassword("123456", salt1);
-            UserRecord student = new UserRecord("student01", hash1, salt1);
+            UserRecord student = new UserRecord("student01", "123456");
             student.setId(userIdCounter.getAndIncrement());
             student.setHomeDir("/student01");
             users.put("student01", student);
         }
+        if (!users.containsKey("student02")) {
+            UserRecord student2 = new UserRecord("student02", "123456");
+            student2.setId(userIdCounter.getAndIncrement());
+            student2.setHomeDir("/student02");
+            users.put("student02", student2);
+        }
         if (!users.containsKey("admin")) {
-            String salt2 = PasswordHasher.generateSalt();
-            String hash2 = PasswordHasher.hashPassword("admin", salt2);
-            UserRecord admin = new UserRecord("admin", hash2, salt2);
+            UserRecord admin = new UserRecord("admin", "admin123");
             admin.setId(userIdCounter.getAndIncrement());
             admin.setHomeDir("/admin");
             users.put("admin", admin);

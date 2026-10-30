@@ -5,7 +5,6 @@ import com.syncvault.server.db.model.FileMetadataRecord;
 import com.syncvault.server.db.model.SessionRecord;
 import com.syncvault.server.db.model.SyncLogRecord;
 import com.syncvault.server.db.model.UserRecord;
-import com.syncvault.server.security.PasswordHasher;
 import com.syncvault.shared.model.SyncAction;
 
 import java.io.BufferedReader;
@@ -124,16 +123,17 @@ public class MySqlDataStore implements IDataStore {
     private void seedDefaultUsersIfEmpty() {
         try {
             if (getUserByUsername("student01") == null) {
-                String salt1 = PasswordHasher.generateSalt();
-                String hash1 = PasswordHasher.hashPassword("123456", salt1);
-                UserRecord student = new UserRecord("student01", hash1, salt1);
+                UserRecord student = new UserRecord("student01", "123456");
                 student.setHomeDir("/student01");
                 createUser(student);
             }
+            if (getUserByUsername("student02") == null) {
+                UserRecord student2 = new UserRecord("student02", "123456");
+                student2.setHomeDir("/student02");
+                createUser(student2);
+            }
             if (getUserByUsername("admin") == null) {
-                String salt2 = PasswordHasher.generateSalt();
-                String hash2 = PasswordHasher.hashPassword("admin", salt2);
-                UserRecord admin = new UserRecord("admin", hash2, salt2);
+                UserRecord admin = new UserRecord("admin", "admin123");
                 admin.setHomeDir("/admin");
                 createUser(admin);
             }
@@ -164,8 +164,19 @@ public class MySqlDataStore implements IDataStore {
                     UserRecord u = new UserRecord();
                     u.setId(rs.getInt("id"));
                     u.setUsername(rs.getString("username"));
-                    u.setPasswordHash(rs.getString("password_hash"));
-                    u.setSalt(rs.getString("salt"));
+                    
+                    String pwd = "";
+                    try {
+                        pwd = rs.getString("password");
+                    } catch (SQLException e) {
+                        try { pwd = rs.getString("password_hash"); } catch (SQLException ignored) {}
+                    }
+                    u.setPassword(pwd);
+
+                    try {
+                        u.setSalt(rs.getString("salt"));
+                    } catch (SQLException ignored) {}
+
                     u.setHomeDir(rs.getString("home_dir"));
                     u.setMaxQuotaBytes(rs.getLong("max_quota_bytes"));
                     u.setCanUpload(rs.getBoolean("can_upload"));
@@ -182,20 +193,34 @@ public class MySqlDataStore implements IDataStore {
 
     @Override
     public synchronized boolean createUser(UserRecord user) {
-        String sql = "INSERT INTO users (username, password_hash, salt, home_dir, max_quota_bytes, can_upload, can_download, can_delete) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (username, password, home_dir, max_quota_bytes, can_upload, can_download, can_delete) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
             ps.setString(1, user.getUsername());
-            ps.setString(2, user.getPasswordHash());
-            ps.setString(3, user.getSalt());
-            ps.setString(4, user.getHomeDir());
-            ps.setLong(5, user.getMaxQuotaBytes());
-            ps.setBoolean(6, user.isCanUpload());
-            ps.setBoolean(7, user.isCanDownload());
-            ps.setBoolean(8, user.isCanDelete());
+            ps.setString(2, user.getPassword());
+            ps.setString(3, user.getHomeDir());
+            ps.setLong(4, user.getMaxQuotaBytes());
+            ps.setBoolean(5, user.isCanUpload());
+            ps.setBoolean(6, user.isCanDownload());
+            ps.setBoolean(7, user.isCanDelete());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            LOGGER.warning("[MYSQL_CREATE_USER_ERR] " + e.getMessage());
-            return false;
+            try {
+                String fallbackSql = "INSERT INTO users (username, password_hash, salt, home_dir, max_quota_bytes, can_upload, can_download, can_delete) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement ps2 = getConnection().prepareStatement(fallbackSql)) {
+                    ps2.setString(1, user.getUsername());
+                    ps2.setString(2, user.getPassword());
+                    ps2.setString(3, "");
+                    ps2.setString(4, user.getHomeDir());
+                    ps2.setLong(5, user.getMaxQuotaBytes());
+                    ps2.setBoolean(6, user.isCanUpload());
+                    ps2.setBoolean(7, user.isCanDownload());
+                    ps2.setBoolean(8, user.isCanDelete());
+                    return ps2.executeUpdate() > 0;
+                }
+            } catch (SQLException ex) {
+                LOGGER.warning("[MYSQL_CREATE_USER_ERR] " + ex.getMessage());
+                return false;
+            }
         }
     }
 

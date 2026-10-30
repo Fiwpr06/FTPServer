@@ -9,7 +9,6 @@ import com.syncvault.server.db.model.UserRecord;
 import com.syncvault.server.rmi.common.ISessionCoordinator;
 import com.syncvault.server.rmi.dto.SessionCheckRequest;
 import com.syncvault.server.rmi.dto.SessionCheckResponse;
-import com.syncvault.server.security.PasswordHasher;
 import com.syncvault.shared.constant.FtpReplyCode;
 
 import java.util.UUID;
@@ -30,9 +29,9 @@ public class PassCommand implements FtpCommand {
         String password = (argument != null) ? argument : "";
         ServerContext context = session.getContext();
 
-        // 1. Xác thực tài khoản trong CSDL
+        // 1. Xác thực tài khoản trong CSDL (So sánh mật khẩu Plaintext trực tiếp, không hash)
         UserRecord user = context.getDataStore().getUserByUsername(username);
-        if (user == null || !PasswordHasher.verify(password, user.getSalt(), user.getPasswordHash())) {
+        if (user == null || !password.equals(user.getPassword())) {
             LOGGER.warning(String.format("[AUTH_FAILED] Đăng nhập thất bại cho user '%s' từ IP %s", username, session.getClientIp()));
             session.setState(SessionState.CONNECTED);
             session.sendReply(FtpReplyCode.NOT_LOGGED_IN, "Username or password incorrect");
