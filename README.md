@@ -33,16 +33,46 @@
 
 ---
 
-## 2. Hướng Dẫn Vận Hành
+## 2. Hướng Dẫn Vận Hành & Khởi Động
 
-### Cách 1: Khởi động với cửa sổ Console (để quan sát log)
-* **Khởi động Server A (Primary - 2121):** Chạy [`START-SERVER-A.bat`](file:///d:/Workspace/Practice/Java/FTPServer/START-SERVER-A.bat)
-* **Khởi động Server B (Secondary - 2122):** Chạy [`START-SERVER-B.bat`](file:///d:/Workspace/Practice/Java/FTPServer/START-SERVER-B.bat)
-* **Khởi chạy Client JavaFX:** Chạy [`START-CLIENT.bat`](file:///d:/Workspace/Practice/Java/FTPServer/START-CLIENT.bat)
+Hệ thống hỗ trợ 2 chế độ khởi động linh hoạt:
+* **Khởi động kèm Console (`.bat`):** Dành cho kiểm thử, chấm điểm và theo dõi chi tiết log kết nối mạng. Tự động giải phóng cổng nếu có phiên cũ bị treo.
+* **Khởi động Ẩn Console (`.vbs`):** Chạy ứng dụng ngầm không hiện cửa sổ CMD đen (như kiến trúc dự án PeerChat).
 
-### Cách 2: Khởi động ẩn Console (Chạy nền)
-* Nhấp đúp vào [`START-CLIENT.vbs`](file:///d:/Workspace/Practice/Java/FTPServer/START-CLIENT.vbs) để mở ứng dụng Client không kèm cửa sổ cmd đen.
+### Kịch bản 1: Chạy cả Server A và Server B trên CÙNG 1 MÁY
 
-### Tài khoản thử nghiệm mặc định:
-* `student01` / Mật khẩu: `123456`
-* `admin` / Mật khẩu: `admin`
+1. **Khởi động Server A (Primary):**
+   * Nhấp đúp [`START-SERVER-A.bat`](START-SERVER-A.bat) (hoặc [`START-SERVER-A.vbs`](START-SERVER-A.vbs)).
+   * Server A lắng nghe tại FTP Port `2121` và RMI Port `1099`.
+2. **Khởi động Server B (Secondary):**
+   * Nhấp đúp [`START-SERVER-B.bat`](START-SERVER-B.bat) (hoặc [`START-SERVER-B.vbs`](START-SERVER-B.vbs)).
+   * Khi được hỏi IP Server A, nhấn `ENTER` để chọn mặc định `127.0.0.1`.
+   * Server B lắng nghe tại FTP Port `2122` và RMI Port `1100`, tự động liên kết tới Server A.
+3. **Khởi động Client JavaFX:**
+   * Nhấp đúp [`START-CLIENT.vbs`](START-CLIENT.vbs) (hoặc [`START-CLIENT.bat`](START-CLIENT.bat)).
+   * Giao diện đăng nhập hiện lên, chọn kết nối vào Server A hoặc Server B.
+4. **Dừng toàn bộ hệ thống:**
+   * Nhấp đúp [`STOP-ALL.bat`](STOP-ALL.bat) để tắt sạch toàn bộ các Server và giải phóng toàn bộ cổng mạng.
+
+### Kịch bản 2: Chạy trên HAI MÁY TÍNH KHÁC NHAU (Qua mạng LAN)
+
+1. **Trên Máy A (Server A):**
+   * Nhấp đúp [`START-SERVER-A.bat`](START-SERVER-A.bat).
+   * Màn hình sẽ hiển thị địa chỉ IP LAN của Máy A (ví dụ: `192.168.1.15`).
+2. **Trên Máy B (Server B):**
+   * Nhấp đúp [`START-SERVER-B.bat`](START-SERVER-B.bat) (hoặc [`START-SERVER-B.vbs`](START-SERVER-B.vbs)).
+   * Nhập địa chỉ IP của Máy A (ví dụ: `192.168.1.15`) rồi nhấn `ENTER`.
+   * Server B tự động kết nối và bắt tay 2 chiều với Server A.
+3. **Trên Máy Client (Máy A, Máy B hoặc Máy C trong cùng mạng LAN):**
+   * Khởi chạy [`START-CLIENT.vbs`](START-CLIENT.vbs).
+   * Nhập địa chỉ IP của Server muốn kết nối (IP Máy A với cổng 2121, hoặc IP Máy B với cổng 2122).
+
+---
+
+## 3. Tài Khoản Kiểm Thử Mặc Định
+
+| Tên đăng nhập (User) | Mật khẩu (Password) | Vai trò | Quyền hạn |
+|---|---|---|---|
+| `student01` | `123456` | Sinh viên | Đọc/Ghi thư mục cá nhân & công cộng |
+| `student02` | `123456` | Sinh viên | Đọc/Ghi thư mục cá nhân & công cộng |
+| `admin` | `admin123` | Quản trị viên | Toàn quyền trên toàn hệ thống |
