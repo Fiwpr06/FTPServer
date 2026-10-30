@@ -21,7 +21,7 @@ if not exist "target\classes" (
 for /f "tokens=5" %%p in ('netstat -aon 2^>nul ^| findstr ":2121 "') do taskkill /f /pid %%p >nul 2>&1
 for /f "tokens=5" %%p in ('netstat -aon 2^>nul ^| findstr ":1099 "') do taskkill /f /pid %%p >nul 2>&1
 
-echo [SYNCVAULT] Đang khởi động Server A (Primary - Port 2121, RMI 1099)...
-"%JAVA_EXE%" "-Dfile.encoding=UTF-8" "-Dsun.stdout.encoding=UTF-8" "-Dsun.stderr.encoding=UTF-8" -cp "target\classes;target\lib\*" com.syncvault.server.ServerLauncher --primary
+echo [SYNCVAULT] Đang khởi động Server A (Primary - Giao diện đồ họa Server Dashboard)...
+"%JAVA_EXE%" --module-path target\lib --add-modules javafx.controls,javafx.fxml,javafx.graphics "-Dfile.encoding=UTF-8" "-Dsun.stdout.encoding=UTF-8" "-Dsun.stderr.encoding=UTF-8" -cp "target\classes;target\lib\*" com.syncvault.server.ServerLauncher --primary
 
 pause

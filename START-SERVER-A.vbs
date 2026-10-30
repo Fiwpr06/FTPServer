@@ -28,7 +28,7 @@ End If
 WshShell.Run "cmd /c for /f ""tokens=5"" %p in ('netstat -aon ^| findstr "":2121 ""') do taskkill /f /pid %p", 0, True
 WshShell.Run "cmd /c for /f ""tokens=5"" %p in ('netstat -aon ^| findstr "":1099 ""') do taskkill /f /pid %p", 0, True
 
-cmd = javaExe & " ""-Dfile.encoding=UTF-8"" -cp ""target\classes;target\lib\*"" com.syncvault.server.ServerLauncher --primary"
+cmd = javaExe & " --module-path target\lib --add-modules javafx.controls,javafx.fxml,javafx.graphics ""-Dfile.encoding=UTF-8"" -cp ""target\classes;target\lib\*"" com.syncvault.server.ServerLauncher --primary"
 
-WshShell.Run cmd, 0, False
-WshShell.Popup "Server A (Primary) đã khởi chạy ngầm thành công!" & vbCrLf & "- Cổng FTP: 2121" & vbCrLf & "- Cổng RMI: 1099" & vbCrLf & vbCrLf & "(Để dừng lại bất kỳ lúc nào: Nhấp đúp STOP-ALL.bat)", 3, "SyncVault - Server A Ready", 64
+' Khoi chay truc tiep cua so giao dien Server A (khong hien console den)
+WshShell.Run cmd, 1, False

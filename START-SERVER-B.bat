@@ -32,7 +32,7 @@ if "%PEER_IP%"=="" (
 if "%PEER_IP%"=="" set "PEER_IP=127.0.0.1"
 
 echo.
-echo [SYNCVAULT] Đang khởi động Server B (Port 2122) kết nối tới Server A (%PEER_IP%:1099)...
-"%JAVA_EXE%" "-Dfile.encoding=UTF-8" "-Dsun.stdout.encoding=UTF-8" "-Dsun.stderr.encoding=UTF-8" -cp "target\classes;target\lib\*" com.syncvault.server.ServerLauncher --secondary --peer=%PEER_IP%
+echo [SYNCVAULT] Đang khởi động Server B (Giao diện đồ họa Server Dashboard kết nối %PEER_IP%:1099)...
+"%JAVA_EXE%" --module-path target\lib --add-modules javafx.controls,javafx.fxml,javafx.graphics "-Dfile.encoding=UTF-8" "-Dsun.stdout.encoding=UTF-8" "-Dsun.stderr.encoding=UTF-8" -cp "target\classes;target\lib\*" com.syncvault.server.ServerLauncher --secondary --peer=%PEER_IP%
 
 pause
