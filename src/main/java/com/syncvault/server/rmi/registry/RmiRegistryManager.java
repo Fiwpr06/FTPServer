@@ -19,6 +19,7 @@ public class RmiRegistryManager {
 
     private final ServerContext context;
     private Registry localRegistry;
+    private volatile boolean wasConnected = false;
 
     public RmiRegistryManager(ServerContext context) {
         this.context = context;
@@ -64,11 +65,13 @@ public class RmiRegistryManager {
         try {
             Registry peerRegistry = LocateRegistry.getRegistry(context.getPeerHost(), context.getPeerRmiPort());
 
-            // Lấy Session Coordinator của đối tác
-            try {
-                ISessionCoordinator peerSession = (ISessionCoordinator) peerRegistry.lookup(SystemConfig.RMI_SESSION_SERVICE);
-                context.setPeerSessionCoordinator(peerSession);
-            } catch (Exception ignored) {}
+            // Lấy Session Coordinator của đối tác (bắt buộc phải có)
+            ISessionCoordinator peerSession = (ISessionCoordinator) peerRegistry.lookup(SystemConfig.RMI_SESSION_SERVICE);
+            if (peerSession == null) {
+                wasConnected = false;
+                return false;
+            }
+            context.setPeerSessionCoordinator(peerSession);
 
             // Nếu Server B -> Lấy WriteForwarder của Server A
             if (!context.isPrimary()) {
@@ -84,12 +87,20 @@ public class RmiRegistryManager {
                 } catch (Exception ignored) {}
             }
 
-            LOGGER.info(String.format("[RMI_PEER] Đã liên kết tới Server đối tác %s:%d", context.getPeerHost(), context.getPeerRmiPort()));
+            // Chỉ ghi log một lần duy nhất khi vừa kết nối thành công
+            if (!wasConnected) {
+                wasConnected = true;
+                LOGGER.info(String.format("[RMI_PEER] Đã liên kết tới Server đối tác %s:%d", context.getPeerHost(), context.getPeerRmiPort()));
+            }
             return true;
         } catch (Exception e) {
-            LOGGER.warning(String.format("[RMI_PEER_WARN] Chưa thể kết nối tới Server đối tác %s:%d (Sẽ thử lại khi cần)",
-                    context.getPeerHost(), context.getPeerRmiPort()));
+            wasConnected = false;
+            context.setPeerSessionCoordinator(null);
             return false;
         }
+    }
+
+    public boolean isConnected() {
+        return wasConnected;
     }
 }

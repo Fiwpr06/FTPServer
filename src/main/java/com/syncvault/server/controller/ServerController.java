@@ -30,6 +30,7 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -311,13 +312,15 @@ public class ServerController {
     }
 
     private void startSessionPoller() {
-        refreshTimeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> {
+        refreshTimeline = new Timeline(new KeyFrame(Duration.seconds(3), e -> {
             handleRefreshSessions();
             updateStorageCount();
-            if (rmiManager != null && context != null && context.getPeerSessionCoordinator() == null) {
-                // Thử kết nối lại đối tác nếu chưa kết nối
-                boolean reconnected = rmiManager.connectToPeer();
-                updatePeerStatus(reconnected);
+
+            // Chỉ thử kết nối khi server đang chạy và chưa kết nối tới đối tác
+            // Chạy bất đồng bộ ngầm (CompletableFuture) để không bao giờ gây lag giao diện JavaFX
+            if (ftpServer != null && ftpServer.isRunning() && rmiManager != null && context != null && context.getPeerSessionCoordinator() == null) {
+                CompletableFuture.supplyAsync(() -> rmiManager.connectToPeer())
+                        .thenAccept(this::updatePeerStatus);
             }
         }));
         refreshTimeline.setCycleCount(Animation.INDEFINITE);
