@@ -10,13 +10,45 @@ import com.syncvault.shared.constant.SystemConfig;
 import com.syncvault.shared.model.ServerMode;
 
 import java.io.File;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
 import java.util.logging.Logger;
 
-// Khởi chạy Máy chủ SyncVault Server (Primary hoặc Secondary)
+// Khởi chạy Máy chủ SyncVault Server (Hỗ trợ cả chế độ đồ họa GUI YoRHa lẫn Headless CLI)
 public class ServerLauncher {
     private static final Logger LOGGER = Logger.getLogger(ServerLauncher.class.getName());
 
     public static void main(String[] args) {
+        // Cấu hình UTF-8 cho console terminal
+        try {
+            System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
+            System.setErr(new PrintStream(System.err, true, StandardCharsets.UTF_8));
+            for (Handler h : Logger.getLogger("").getHandlers()) {
+                if (h instanceof ConsoleHandler) {
+                    h.setEncoding("UTF-8");
+                }
+            }
+        } catch (Exception ignored) {}
+
+        boolean headless = false;
+        for (String arg : args) {
+            if (arg.equalsIgnoreCase("--headless") || arg.equalsIgnoreCase("--cli") || arg.equalsIgnoreCase("-h")) {
+                headless = true;
+                break;
+            }
+        }
+
+        if (headless) {
+            runHeadless(args);
+        } else {
+            // Mặc định khởi chạy giao diện đồ họa Server Dashboard UI/UX
+            ServerApp.main(args);
+        }
+    }
+
+    public static void runHeadless(String[] args) {
         String modeArg = "primary";
         String peerHost = "127.0.0.1";
 
@@ -68,7 +100,7 @@ public class ServerLauncher {
 
         String localIp = com.syncvault.shared.util.NetworkUtil.getLocalIpAddress();
         LOGGER.info(String.format("====================================================\n" +
-                        "  SYNCVAULT // %s ĐÃ SẴN SÀNG HOẠT ĐỘNG\n" +
+                        "  SYNCVAULT // %s ĐÃ SẴN SÀNG HOẠT ĐỘNG (HEADLESS)\n" +
                         "  - Vai trò: %s\n" +
                         "  - Địa chỉ IP máy này (LAN): %s\n" +
                         "  - Kênh điều khiển FTP: Port %d\n" +
